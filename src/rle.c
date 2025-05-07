@@ -10,8 +10,7 @@
 */
 int compress_rle(const char *filePath)
 {
-    FILE *inputFile;
-    inputFile = fopen(filePath, "r");
+    FILE *inputFile = fopen(filePath, "r");
 
     if (inputFile == NULL)
     {
@@ -19,8 +18,10 @@ int compress_rle(const char *filePath)
         return EXIT_FAILURE;
     }
 
-    char *result = (char *) malloc(64);
-    char *tmp = (char *) malloc(8);
+    size_t resultSize = RESULT_SIZE_INCREMENT;
+    char *result = (char *) malloc(resultSize);
+    size_t tmpSize = TMP_SIZE_INCREMENT;
+    char *tmp = (char *) malloc(tmpSize);
 
     if (result == NULL || tmp == NULL)
     {
@@ -43,15 +44,28 @@ int compress_rle(const char *filePath)
             if (currentChar != oldChar)
             {
                 tmpLength = snprintf(NULL, 0, "%d", occurences);
+                tmp = check_and_realloc(tmp, &tmpSize, tmpSize + 2, TMP_SIZE_INCREMENT);
 
-                int nbCharsWritten = snprintf(tmp, sizeof(tmp) + tmpLength + 1, "%d%c", occurences, oldChar);
+                if (tmp == NULL)
+                {
+                    return EXIT_FAILURE;
+                }
+                
+                int nbCharsWritten = snprintf(tmp, tmpSize, "%d%c", occurences, oldChar);
 
                 if (nbCharsWritten <= 0)
                 {
-                    printf("/!\\ Error during compression.\n");
+                    printf("/!\\ Error during compression.");
                     return EXIT_FAILURE;
                 }
 
+                result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
+
+                if (result == NULL)
+                {
+                    return EXIT_FAILURE;
+                }
+        
                 strncat(result, tmp, nbCharsWritten);
     
                 oldChar = currentChar;
@@ -67,7 +81,22 @@ int compress_rle(const char *filePath)
     if (isprint(oldChar))
     {
         tmpLength = snprintf(NULL, 0, "%d", occurences);
-        snprintf(tmp, sizeof(tmp) + tmpLength + 1, "%d%c\n", occurences, oldChar);
+        tmp = check_and_realloc(tmp, &tmpSize, tmpLength + 2, TMP_SIZE_INCREMENT);
+
+        if (tmp == NULL)
+        {
+            return EXIT_FAILURE;
+        }
+
+        snprintf(tmp, tmpSize, "%d%c\n", occurences, oldChar);
+
+        result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
+
+        if (result == NULL)
+        {
+            return EXIT_FAILURE;
+        }
+        
         strncat(result, tmp, strlen(tmp));
     }
 
