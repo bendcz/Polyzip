@@ -1,11 +1,102 @@
 #include "../include/rle.h"
 
-void compress_rle(const char *filePath)
+// IN: Path to the file to be compressed.
+// OUT: 0 (success) or 1 (failure).
+/*
+  This function opens the file passed as an argument, allocates memory
+  blocks and manages whether they are too small, and uses these same blocks
+  during compression using the RLE algorithm. The compressed string is saved
+  in a file with the same name, in the same directory but with a '.rle' extension.
+*/
+int compress_rle(const char *filePath)
 {
+    FILE *inputFile;
+    inputFile = fopen(filePath, "r");
 
+    if (inputFile == NULL)
+    {
+        printf("/!\\ Error during file reading.\n");
+        return EXIT_FAILURE;
+    }
+
+    char *result = (char *) malloc(64);
+    char *tmp = (char *) malloc(8);
+
+    if (result == NULL || tmp == NULL)
+    {
+        printf("/!\\ Error during memory allocation.\n");
+        return EXIT_FAILURE;
+    }
+
+    result[0] = '\0';
+    tmp[0] = '\0';
+
+    char oldChar = fgetc(inputFile);
+    char currentChar;
+    unsigned int occurences = isprint(oldChar) ? 1 : 0;
+    int tmpLength = 0;
+    
+    while ((currentChar = fgetc(inputFile)) != EOF)
+    {
+        if (isprint(currentChar))
+        {
+            if (currentChar != oldChar)
+            {
+                tmpLength = snprintf(NULL, 0, "%d", occurences);
+
+                int nbCharsWritten = snprintf(tmp, sizeof(tmp) + tmpLength + 1, "%d%c", occurences, oldChar);
+
+                if (nbCharsWritten <= 0)
+                {
+                    printf("/!\\ Error during compression.\n");
+                    return EXIT_FAILURE;
+                }
+
+                strncat(result, tmp, nbCharsWritten);
+    
+                oldChar = currentChar;
+                occurences = 1;
+            }
+            else
+            {
+                occurences += 1;
+            }
+        }
+    }
+
+    if (isprint(oldChar))
+    {
+        tmpLength = snprintf(NULL, 0, "%d", occurences);
+        snprintf(tmp, sizeof(tmp) + tmpLength + 1, "%d%c\n", occurences, oldChar);
+        strncat(result, tmp, strlen(tmp));
+    }
+
+    fclose(inputFile);
+
+    FILE *outputFile;
+    char *newPath = get_path_with_custom_extension(filePath, "rle");
+
+    outputFile = fopen(newPath, "w");
+
+    if (outputFile == NULL)
+    {
+        printf("/!\\ Error during file writing.\n");
+        free(result);
+        free(tmp);
+        return EXIT_FAILURE;
+    }
+
+    fprintf(outputFile, result);
+    fclose(outputFile);
+
+    free(result);
+    free(tmp);
+    free(newPath);
+
+    return EXIT_SUCCESS;
 }
 
-void decompress_rle(const char *filePath)
+int decompress_rle(const char *filePath)
 {
-    
+    return EXIT_SUCCESS;
 }
