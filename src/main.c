@@ -12,16 +12,23 @@ int main(int argc, char *argv[])
     printf("              ▀▀▀          ▀    \n");
     printf("This program compresses files using RLE encoding.\n");
 
-    if (argc < 3)
+    if (argc < 4)
     {
         printf("\n/!\\ Error during program call.\n");
-        printf("Usage: ./polyzip --rle <FILE_PATH>\n");
+        printf("Usage: ./polyzip --rle --<c for compress, d for decompress> <FILE_PATH>\n");
         return EXIT_FAILURE;
     }
 
     if (strncmp(argv[1], "--rle", 5) == 0)
     {
-        compress_rle(argv[2]);
+        if (strncmp(argv[2], "--c", 3) == 0)
+        {
+            compress_rle(argv[3]);
+        }
+        else if (strncmp(argv[2], "--d", 3) == 0)
+        {
+            decompress_rle(argv[3]);
+        }
     }
 
     return EXIT_SUCCESS;
