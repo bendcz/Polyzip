@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../include/rle.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
 
     if (strncmp(argv[1], "--rle", 5) == 0)
     {
-
+        compress_rle(argv[2]);
     }
 
     return EXIT_SUCCESS;
