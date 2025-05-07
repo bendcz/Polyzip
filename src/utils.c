@@ -52,3 +52,23 @@ char *get_path_with_custom_extension(const char *filePath, const char *extension
 
     return result;
 }
+
+char *check_and_realloc(char *buffer, size_t *bufferSize, size_t requiredSize, size_t increment)
+{
+    if (requiredSize >= *bufferSize)
+    {
+        *bufferSize += increment;
+        char *newBuffer = (char *) realloc(buffer, *bufferSize);
+
+        if (newBuffer == NULL)
+        {
+            printf("/!\\ Error during memory reallocation.\n");
+            free(buffer);
+            return NULL;
+        }
+
+        return newBuffer;
+    }
+    
+    return buffer;
+}
