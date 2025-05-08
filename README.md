@@ -7,7 +7,7 @@
 - [License](#-license)
 - [Contacts](#-contacts)
 
-## :rocket: About
+## 🚀 About
 
 Polyzip is a program written in C11 for compressing and decompressing files using  
 the following algorithms:
@@ -17,7 +17,7 @@ the following algorithms:
 
 Polyzip tries to adhere to **simple**, **secure** and **tested** code.
 
-## :hammer: How to Build
+## 🔨 How to Build
 
 Compiling the project is very easy.  
 In your CLI:
@@ -29,9 +29,9 @@ In your CLI:
 
 To active test compilation, `cmake ..` should be `cmake -DBUILD_TESTS=ON ..`.
 
-## :books: Documentation
+## 📚 Documentation
 
-## :copyright: License
+## 📫 License
 
 This is free and unencumbered software released into the public domain.
 
