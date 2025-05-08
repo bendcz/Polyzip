@@ -2,19 +2,21 @@
 
 const char *get_file_extension(const char *filePath)
 {
-    const char *dot = strrchr(filePath, '.');
-    
-    if (dot == NULL || dot == filePath)
+    const char *firstDot = strchr(filePath, '.');
+    const char *tmp = firstDot - 1;
+
+    if (firstDot == NULL || firstDot == filePath || (tmp != NULL && strncmp(tmp, PATH_SEPARATOR, 1) == 0))
     {
         return "";
     }
 
-    return dot + 1;
+    return firstDot + 1;
 }
 
-const char *get_path_whitout_extension(const char *filePath)
+const char *get_path_without_extension(const char *filePath)
 {
     const char *extension = get_file_extension(filePath);
+
     char *p, *q, *r;
 
     if (*extension && (q = r = strstr(filePath, extension)) != NULL)
@@ -35,7 +37,7 @@ const char *get_path_whitout_extension(const char *filePath)
 
 char *get_path_with_custom_extension(const char *filePath, const char *extension)
 {
-    const char * filePathWithoutExtension = get_path_whitout_extension(filePath);
+    const char * filePathWithoutExtension = get_path_without_extension(filePath);
 
     size_t filePathLength = strlen(filePathWithoutExtension);
     size_t extensionLength = strlen(extension);
