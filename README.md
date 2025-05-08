@@ -58,6 +58,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <https://unlicense.org>
 
-## :mailbox: Contacts
+## 📫 Contacts
 
 [Back to top](#top)
