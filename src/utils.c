@@ -2,8 +2,12 @@
 
 const char *get_file_extension(const char *filePath)
 {
-    const char *firstDot = strchr(filePath, '.');
-    const char *tmp = firstDot - 1;
+    const char *lastPathSeparator = strrchr(filePath, *PATH_SEPARATOR);
+    const char *firstDot = NULL;
+    const char *tmp = NULL;
+
+    firstDot = (lastPathSeparator != NULL) ? strchr(lastPathSeparator, '.') : strchr(filePath, '.');
+    tmp = firstDot - 1;
 
     if (firstDot == NULL || firstDot == filePath || (tmp != NULL && strncmp(tmp, PATH_SEPARATOR, 1) == 0))
     {
@@ -16,39 +20,56 @@ const char *get_file_extension(const char *filePath)
 const char *get_path_without_extension(const char *filePath)
 {
     const char *extension = get_file_extension(filePath);
-
-    char *p, *q, *r;
-
-    if (*extension && (q = r = strstr(filePath, extension)) != NULL)
+    
+    if (strncmp(extension, "\0", 1) == 0)
     {
-        size_t len = strlen(extension);
-        while ((r = strstr(p = r + len, extension)) != NULL)
-        {
-            while (p < r)
-                *q++ = *p++;
-        }
-
-        while ((*q++ = *p++) != '\0')
-            continue;
+        return filePath;
     }
 
-    return filePath;
+    size_t charsToCopy = strlen(filePath) - strlen(extension) - 1;
+    char *result = (char *)malloc(sizeof(char) * (charsToCopy + 1));
+
+    if (result == NULL)
+    {
+        return NULL; 
+    }
+
+    memcpy(result, filePath, charsToCopy);
+    result[charsToCopy] = '\0';
+
+    return result;
 }
 
-char *get_path_with_custom_extension(const char *filePath, const char *extension)
+const char *get_path_with_custom_extension(const char *filePath, const char *extension)
 {
+    if (filePath == NULL || extension == NULL || strlen(filePath) == 0 || strlen(extension) == 0) { return filePath; }
+
     const char * filePathWithoutExtension = get_path_without_extension(filePath);
 
     size_t filePathLength = strlen(filePathWithoutExtension);
     size_t extensionLength = strlen(extension);
     size_t finalLength = filePathLength + extensionLength + 1;
+    bool addADot = false;
+
+    if (strchr(extension, '.') != &extension[0])
+    {
+        addADot = true;
+        finalLength += 1;
+    }
 
     char *result = (char *) malloc(sizeof(char) * finalLength);
 
     if (result != NULL)
     {
         result[0] = '\0';
+
         strncat(result, filePathWithoutExtension, filePathLength);
+
+        if (addADot)
+        {
+            strcat(result, ".");
+        }
+
         strncat(result, extension, extensionLength);
     }
 

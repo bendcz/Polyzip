@@ -19,6 +19,7 @@ Test(utils, get_file_extension_test)
         cr_assert_str_eq(get_file_extension("/path/to/file.pdf"), "pdf");
         cr_assert_str_eq(get_file_extension("/path/to/file"), "");
         cr_assert_str_eq(get_file_extension("/path/to/file.archive.tar.gz"), "archive.tar.gz");
+        cr_assert_str_eq(get_file_extension("/folder.subfolder/file.ext"), "ext");
         cr_assert_str_eq(get_file_extension("/path/to/.hiddenfile"), "");
     #endif
 }
@@ -30,10 +31,23 @@ Test(utils, get_path_without_extension_test)
         cr_assert_str_eq(get_path_without_extension("file.txt"), "file");
         cr_assert_str_eq(get_path_without_extension("/path/to/file.txt"), "/path/to/file");
         cr_assert_str_eq(get_path_without_extension("file"), "file");
-        cr_assert_str_eq(get_path_without_extension("archive.tar.gz"), "archive.tar");
+        cr_assert_str_eq(get_path_without_extension("archive.tar.gz"), "archive");
         cr_assert_str_eq(get_path_without_extension("/folder.subfolder/file.ext"), "/folder.subfolder/file");
         cr_assert_str_eq(get_path_without_extension(""), "");
-        cr_assert_str_eq(get_path_without_extension("file."), "file");
-        cr_assert_str_eq(get_path_without_extension("/path/to/file."), "/path/to/file");
+        cr_assert_str_eq(get_path_without_extension("file."), "file.");
+        cr_assert_str_eq(get_path_without_extension("/path/to/file."), "/path/to/file.");
+    #endif
+}
+
+Test(utils, get_path_with_custom_extension_test)
+{
+    #ifdef _WIN32
+    #elif __unix__
+        cr_assert_str_eq(get_path_with_custom_extension("", ""), "");
+        cr_assert_str_eq(get_path_with_custom_extension("path/to/file", "txt"), "path/to/file.txt");
+        cr_assert_str_eq(get_path_with_custom_extension("path/to/file", NULL), "path/to/file");
+        cr_assert_str_eq(get_path_with_custom_extension("path/to/file", ""), "path/to/file");
+        cr_assert_str_eq(get_path_with_custom_extension("path/to/file", ".txt"), "path/to/file.txt");
+        cr_assert_str_eq(get_path_with_custom_extension("a/very/long/path/to/a/file", "extension"), "a/very/long/path/to/a/file.extension");    
     #endif
 }

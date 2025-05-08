@@ -98,7 +98,7 @@ int compress_rle(const char *filePath)
     fclose(inputFile);
 
     
-    char *newPath = get_path_with_custom_extension(filePath, "rle");
+    const char *newPath = get_path_with_custom_extension(filePath, "rle");
     FILE *outputFile = fopen(newPath, "wb");
 
     if (outputFile == NULL)
@@ -114,7 +114,7 @@ int compress_rle(const char *filePath)
 
     free(result);
     free(tmp);
-    free(newPath);
+    free((char *) newPath);
 
     return EXIT_SUCCESS;
 }
@@ -183,10 +183,11 @@ int decompress_rle(const char *filePath)
     free(tmp);
     fclose(inputFile);
 
-    char *newPath = get_path_with_custom_extension(filePath, "txt");
+    const char *newPath = get_path_with_custom_extension(filePath, "txt");
     FILE *outputFile = fopen(newPath, "wb");
     fprintf(outputFile, result);
 
+    free((char *) newPath);
     free(result);
     fclose(outputFile);
 
