@@ -1,5 +1,13 @@
 <a name="top"></a>
 
+<h1 style="color: #9128bfff; font-size: 8rem;">Polyzip</h1>
+
+[![language](https://img.shields.io/badge/language-C-blue)]()
+[![standard](https://img.shields.io/badge/C_Standard-C11-blue)]()
+[![OS](https://img.shields.io/badge/OS-linux,_windows-blue)]()
+[![license](https://img.shields.io/badge/license-Unlicense-brightbreen)]()
+[![Free](https://img.shields.io/badge/free-brightgreen)](#-license)
+
 ## Table of Contents
 - [About](#-about)
 - [How to Build](#-how-to-build)
