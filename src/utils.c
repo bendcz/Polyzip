@@ -4,7 +4,7 @@ const char *get_file_extension(const char *filePath)
 {
     const char *dot = strrchr(filePath, '.');
     
-    if (!dot || dot == filePath)
+    if (dot == NULL || dot == filePath)
     {
         return "";
     }

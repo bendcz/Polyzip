@@ -4,6 +4,20 @@ project(Polyzip VERSION 1.0)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
-add_executable(Polyzip src/main.c src/rle.c src/utils.c include/rle.h include/utils.h)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+add_executable(Polyzip src/main.c src/rle.c src/utils.c include/rle.h include/utils.h)
 target_compile_options(Polyzip PRIVATE -g -O0 -Wall -Wextra)
+
+option(BUILD_TESTS "Build tests" OFF)
+
+if (BUILD_TESTS)
+    find_package(Criterion REQUIRED)
+    add_executable(utils_test tests/utils_test.c src/utils.c include/utils.h)
+    target_link_libraries(utils_test Criterion::Criterion)
+
+    add_custom_target(run_tests
+    COMMAND utils_test
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+endif()
