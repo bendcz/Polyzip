@@ -6,9 +6,9 @@
   This function opens the file passed as an argument, allocates memory
   blocks and manages whether they are too small, and uses these same blocks
   during compression using the RLE algorithm. The compressed string is saved
-  in a file with the same name, in the same directory but with a '.rle' extension.
+  in a file with the same name, but with a '.rle' extension.
 */
-int compress_rle(const char *inputPath, const char *outputPath, const char *outputName)
+int compress_rle(const char *inputPath, const char *outputPath)
 {
     // File to compress.
     FILE *inputFile = fopen(inputPath, "rb");
@@ -98,28 +98,18 @@ int compress_rle(const char *inputPath, const char *outputPath, const char *outp
     // Reallocation if we need more space.
     result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
     if (result == NULL) { return EXIT_FAILURE; }
-    
+
     strncat(result, tmp, strlen(tmp));
 
     // The role of these lines is to manage the compressed file path.
-    char *newPath = strncpy(newPath, outputPath, strlen(outputPath));
-    bool sameName = strlen(outputName) == 0 ? true : false;
+    const char *fileName = get_file_name(inputPath);
+    char *newPath = (char *) malloc(sizeof(char) * strlen(outputPath) + strlen(fileName) + 3 + 1);
+    if (newPath == NULL) { return EXIT_FAILURE; }
 
-    if (sameName)
-    {
-        const char *fileName = get_file_name(inputPath);
-        strncat(newPath, fileName, strlen(fileName));
-    }
-    else
-    {
-        strncat(newPath, outputName, strlen(outputName));
-    }
+    strncpy(newPath, outputPath, strlen(outputPath));
+    strncat(newPath, fileName, strlen(fileName));
 
-    newPath = get_path_with_custom_extension(newPath, "rle");
-
-    printf("newPath: %s\n", newPath);
-    
-    FILE *outputFile = fopen(newPath, "wb");
+    FILE *outputFile = fopen(get_path_with_custom_extension(newPath, "rle"), "wb");
 
     if (outputFile == NULL)
     {
@@ -140,16 +130,26 @@ int compress_rle(const char *inputPath, const char *outputPath, const char *outp
     return EXIT_SUCCESS;
 }
 
+// IN: Path to the file to be compressed and path to the compressed file.
+// OUT: 0 (success) or 1 (failure).
+/*
+  This function opens the file passed as an argument, allocates memory
+  blocks and manages whether they are too small, and uses these same blocks
+  during decompression using the RLE algorithm. The decompressed string is saved
+  in a file with the same name, but with a '.txt' extension.
+*/
 int decompress_rle(const char *inputPath, const char *outputPath)
 {
+    // File to decompress.
     FILE *inputFile = fopen(inputPath, "rb");
 
     if (inputFile == NULL)
     {
-        printf("/!\\ Error during file reading.\n");
+        perror("/!\\ Error during file reading.\n");
         return EXIT_FAILURE;
     }
 
+    // Contains the decompressed content.
     size_t resultSize = RESULT_SIZE_INCREMENT;
     char *result = (char *) malloc(resultSize);
 
@@ -158,7 +158,7 @@ int decompress_rle(const char *inputPath, const char *outputPath)
 
     if (result == NULL || tmp == NULL)
     {
-        printf("/!\\ Error during memory allocation.\n");
+        perror("/!\\ Error during memory allocation.\n");
         return EXIT_FAILURE;
     }
 
@@ -204,8 +204,15 @@ int decompress_rle(const char *inputPath, const char *outputPath)
     free(tmp);
     fclose(inputFile);
 
-    const char *newPath = get_path_with_custom_extension(inputPath, "txt");
-    FILE *outputFile = fopen(newPath, "wb");
+    // The role of these lines is to manage the compressed file path.
+    const char *fileName = get_file_name(inputPath);
+    char *newPath = (char *) malloc(sizeof(char) * strlen(outputPath) + strlen(fileName) + 3 + 1);
+    if (newPath == NULL) { return EXIT_FAILURE; }
+
+    strncpy(newPath, outputPath, strlen(outputPath));
+    strncat(newPath, fileName, strlen(fileName));
+
+    FILE *outputFile = fopen(get_path_with_custom_extension(newPath, "txt"), "wb");
     fprintf(outputFile, result);
 
     free((char *) newPath);

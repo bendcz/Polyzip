@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     {
         if (strncmp(argv[2], "--c", 3) == 0)
         {
-            compress_rle(argv[3], argv[4], argv[5]);
+            compress_rle(argv[3], argv[4]);
         }
         else if (strncmp(argv[2], "--d", 3) == 0)
         {

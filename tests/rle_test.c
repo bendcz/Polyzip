@@ -6,3 +6,9 @@
 #include "criterion/new/assert.h"
 #include "../include/rle.h"
 
+Test(utils, get_file_extension_test)
+{
+    #ifdef _WIN32
+    #elif __unix__
+    #endif
+}
