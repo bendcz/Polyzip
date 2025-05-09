@@ -17,8 +17,7 @@
 
 ## 🚀 About
 
-Polyzip is a program written in C11 for compressing and decompressing files using  
-the following algorithms:
+**Polyzip is a program written in C11 for compressing and decompressing files using the following algorithms:**
 
 - RLE (Run-Length Encoding),
 - Huffman (TODO).

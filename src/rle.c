@@ -109,7 +109,9 @@ const char *compress_rle(const char *inputPath, const char *outputPath)
     strncpy(newPath, outputPath, strlen(outputPath));
     strncat(newPath, fileName, strlen(fileName));
 
-    FILE *outputFile = fopen(get_path_with_custom_extension(newPath, "rle"), "wb");
+    const char * finalPath = get_path_with_custom_extension(newPath, "rle");
+
+    FILE *outputFile = fopen(finalPath, "wb");
 
     if (outputFile == NULL)
     {
@@ -125,8 +127,9 @@ const char *compress_rle(const char *inputPath, const char *outputPath)
     fclose(outputFile);
     free(result);
     free(tmp);
+    free((char *) newPath);
 
-    return ((const char *) newPath);
+    return (finalPath);
 }
 
 // IN: Path to the file to be compressed and path to the compressed file.
@@ -211,11 +214,14 @@ const char *decompress_rle(const char *inputPath, const char *outputPath)
     strncpy(newPath, outputPath, strlen(outputPath));
     strncat(newPath, fileName, strlen(fileName));
 
-    FILE *outputFile = fopen(get_path_with_custom_extension(newPath, "txt"), "wb");
+    const char * finalPath = get_path_with_custom_extension(newPath, "txt");
+
+    FILE *outputFile = fopen(finalPath, "wb");
     fprintf(outputFile, result);
     
     free(result);
     fclose(outputFile);
+    free((char *) newPath);
 
-    return newPath;
+    return finalPath;
 }

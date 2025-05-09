@@ -15,7 +15,7 @@ void calculate_file_hash(const char *filePath, unsigned char *hash)
 
     if (file == NULL)
     {
-        perror("fopen");
+        perror("/!\\ Error during file open.\n");
         exit(EXIT_FAILURE);
     }
 
@@ -52,13 +52,8 @@ void calculate_file_hash(const char *filePath, unsigned char *hash)
 	if (EVP_DigestFinal_ex(mdctx, digest, &digestLength) != 1)
     {
 		OPENSSL_free(digest);
-        // handle errro
+        exit(EXIT_FAILURE);
 	}
-
-	for (int i = 0; i < digestLength; i++) {
-		printf("%02x", digest[i]);
-	}
-
 
     OPENSSL_free(digest);
     EVP_MD_CTX_destroy(mdctx);
@@ -69,19 +64,12 @@ void calculate_file_hash(const char *filePath, unsigned char *hash)
 int compare_file_content(const char *inputFunction(const char *, const char *), const char *inputPath,
                           const char *outputFunction(const char *, const char *), const char *outputPath)
 {
-
     unsigned char hash1[512];
     unsigned char hash2[512];
 
     const char *firstResult = inputFunction(inputPath, outputPath);
-    calculate_file_hash(firstResult, hash1);
-
-    printf("firstResult: %s\n", firstResult);
-
-    const char *secondResult = outputFunction(firstResult, inputPath);
-
-    printf("secondResult: %s\n", secondResult);
-
+    calculate_file_hash(inputPath, hash1);
+    const char *secondResult = outputFunction(firstResult, outputPath);
     calculate_file_hash(secondResult, hash2);
 
     return memcmp(hash1, hash2, 512);
@@ -91,6 +79,6 @@ Test(rle, rle_test)
 {
     #ifdef _WIN32
     #elif __unix__
-        cr_assert_eq(compare_file_content(compress_rle, "/home/user/Desktop/polyzip/tests/samples/rle/test.txt", decompress_rle, "/home/user/Desktop/polyzip/tests/samples/rle"), 0);
+        cr_assert_eq(compare_file_content(compress_rle, "/home/user/Desktop/polyzip/tests/samples/rle/test.txt", decompress_rle, "/home/user/Desktop/polyzip/tests/samples/rle/"), 0);
     #endif
 }
