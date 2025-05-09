@@ -2,6 +2,8 @@
 
 const char *get_file_extension(const char *filePath)
 {
+    if (filePath == NULL) { return ""; }
+
     const char *lastPathSeparator = strrchr(filePath, *PATH_SEPARATOR);
     const char *firstDot = NULL;
     const char *tmp = NULL;
@@ -17,8 +19,31 @@ const char *get_file_extension(const char *filePath)
     return firstDot + 1;
 }
 
+const char *get_file_name(const char *filePath)
+{
+    if (filePath == NULL) { return ""; }
+
+    const char *extension = get_file_extension(filePath);
+    const char *lastPathSeparator = strrchr(filePath, *PATH_SEPARATOR);
+    size_t charsToCopy = strlen(lastPathSeparator) - strlen(extension) - 2;
+
+    char *result = (char *) malloc(sizeof(char) * charsToCopy + 1);
+
+    if (result == NULL)
+    {
+        perror("/!\\ Error during memory allocation.");
+        exit(EXIT_FAILURE);
+    }
+
+    strncpy(result, lastPathSeparator + 1, charsToCopy);
+    result[charsToCopy] = '\0';
+    return result;
+}
+
 const char *get_path_without_extension(const char *filePath)
 {
+    if (filePath == NULL) { return ""; }
+
     const char *extension = get_file_extension(filePath);
     
     if (strncmp(extension, "\0", 1) == 0)

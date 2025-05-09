@@ -13,6 +13,7 @@
 #endif
 
 const char *get_file_extension(const char *filePath);
+const char *get_file_name(const char *filePath);
 const char *get_path_without_extension(const char *filePath);
 const char *get_path_with_custom_extension(const char *filePath, const char *extension);
 

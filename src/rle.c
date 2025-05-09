@@ -1,6 +1,6 @@
 #include "../include/rle.h"
 
-// IN: Path to the file to be compressed.
+// IN: Path to the file to be compressed and path to the compressed file.
 // OUT: 0 (success) or 1 (failure).
 /*
   This function opens the file passed as an argument, allocates memory
@@ -8,61 +8,73 @@
   during compression using the RLE algorithm. The compressed string is saved
   in a file with the same name, in the same directory but with a '.rle' extension.
 */
-int compress_rle(const char *filePath)
+int compress_rle(const char *inputPath, const char *outputPath, const char *outputName)
 {
-    FILE *inputFile = fopen(filePath, "rb");
+    // File to compress.
+    FILE *inputFile = fopen(inputPath, "rb");
 
-    if (inputFile == NULL)
-    {
-        printf("/!\\ Error during file reading.\n");
-        return EXIT_FAILURE;
-    }
-
+    // Contains output content.
     size_t resultSize = RESULT_SIZE_INCREMENT;
     char *result = (char *) malloc(resultSize);
+    
+    // Contains the content to be concatenated with the result as the file
+    // is read during the compression phase.
     size_t tmpSize = TMP_SIZE_INCREMENT;
     char *tmp = (char *) malloc(tmpSize);
 
-    if (result == NULL || tmp == NULL)
+    // Check that the file to be compressed has been opened successfully.
+    if (inputFile == NULL)
     {
-        printf("/!\\ Error during memory allocation.\n");
+        perror("/!\\ Error during file reading.\n");
         return EXIT_FAILURE;
     }
 
+    // Check the results of memory allocation.
+    if (result == NULL || tmp == NULL)
+    {
+        perror("/!\\ Error during memory allocation.\n");
+        return EXIT_FAILURE;
+    }
+
+    // The termination character is added at the start, before concatenations
+    // in the rest of the code.
     result[0] = '\0';
     tmp[0] = '\0';
 
+    // Obtain the first character of the file.
     char oldChar = fgetc(inputFile);
+
+    // This variable will be used to store the current char in the file read loop.
     char currentChar;
-    unsigned int occurences = isprint(oldChar) ? 1 : 0;
-    int tmpLength = 0;
+
+    // This variable stores the number of occurences of the current character.
+    unsigned int occurences = 1;
     
+    // Loop over the file, character by character.
     while (fread(&currentChar, sizeof(char), 1, inputFile) == 1)
     {
+        // If the current character is not equal to the old one, we should remember
+        // the number of occurences and the old character.
+        // ex: "aaab"
+        // -> When we reach the 'b' character, we need to store "3a".
+        // Otherwise, it's the same characters and you just increment the occurences counter.
         if (currentChar != oldChar)
         {
-            tmpLength = snprintf(NULL, 0, "%d", occurences);
+            // Reallocation if we need more space.
             tmp = check_and_realloc(tmp, &tmpSize, tmpSize + 2, TMP_SIZE_INCREMENT);
-
-            if (tmp == NULL)
-            {
-                return EXIT_FAILURE;
-            }
+            if (tmp == NULL) { return EXIT_FAILURE; }
             
             int nbCharsWritten = snprintf(tmp, tmpSize, "%d%c", occurences, oldChar);
 
             if (nbCharsWritten <= 0)
             {
-                printf("/!\\ Error during compression.");
+                perror("/!\\ Error during compression.");
                 return EXIT_FAILURE;
             }
 
+            // Reallocation if we need more space.
             result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
-
-            if (result == NULL)
-            {
-                return EXIT_FAILURE;
-            }
+            if (result == NULL) { return EXIT_FAILURE; }
     
             strncat(result, tmp, nbCharsWritten);
 
@@ -75,30 +87,38 @@ int compress_rle(const char *filePath)
         }
     }
 
-
-    tmpLength = snprintf(NULL, 0, "%d", occurences);
+    // This variable is used in oder to store the length of tmp.
+    int tmpLength = snprintf(NULL, 0, "%d", occurences);
     tmp = check_and_realloc(tmp, &tmpSize, tmpLength + 2, TMP_SIZE_INCREMENT);
 
-    if (tmp == NULL)
-    {
-        return EXIT_FAILURE;
-    }
+    if (tmp == NULL) { return EXIT_FAILURE; }
 
     snprintf(tmp, tmpSize, "%d%c", occurences, oldChar);
 
+    // Reallocation if we need more space.
     result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
-
-    if (result == NULL)
-    {
-        return EXIT_FAILURE;
-    }
+    if (result == NULL) { return EXIT_FAILURE; }
     
     strncat(result, tmp, strlen(tmp));
 
-    fclose(inputFile);
+    // The role of these lines is to manage the compressed file path.
+    char *newPath = strncpy(newPath, outputPath, strlen(outputPath));
+    bool sameName = strlen(outputName) == 0 ? true : false;
 
+    if (sameName)
+    {
+        const char *fileName = get_file_name(inputPath);
+        strncat(newPath, fileName, strlen(fileName));
+    }
+    else
+    {
+        strncat(newPath, outputName, strlen(outputName));
+    }
+
+    newPath = get_path_with_custom_extension(newPath, "rle");
+
+    printf("newPath: %s\n", newPath);
     
-    const char *newPath = get_path_with_custom_extension(filePath, "rle");
     FILE *outputFile = fopen(newPath, "wb");
 
     if (outputFile == NULL)
@@ -110,8 +130,9 @@ int compress_rle(const char *filePath)
     }
 
     fwrite(result, sizeof(char), strlen(result), outputFile);
+    
+    fclose(inputFile);
     fclose(outputFile);
-
     free(result);
     free(tmp);
     free((char *) newPath);
@@ -119,9 +140,9 @@ int compress_rle(const char *filePath)
     return EXIT_SUCCESS;
 }
 
-int decompress_rle(const char *filePath)
+int decompress_rle(const char *inputPath, const char *outputPath)
 {
-    FILE *inputFile = fopen(filePath, "rb");
+    FILE *inputFile = fopen(inputPath, "rb");
 
     if (inputFile == NULL)
     {
@@ -183,7 +204,7 @@ int decompress_rle(const char *filePath)
     free(tmp);
     fclose(inputFile);
 
-    const char *newPath = get_path_with_custom_extension(filePath, "txt");
+    const char *newPath = get_path_with_custom_extension(inputPath, "txt");
     FILE *outputFile = fopen(newPath, "wb");
     fprintf(outputFile, result);
 
