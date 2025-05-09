@@ -13,7 +13,8 @@ option(BUILD_TESTS "Build tests" OFF)
 
 if (BUILD_TESTS)
     find_package(Criterion REQUIRED)
-    add_executable(utils_test tests/utils_test.c src/utils.c include/utils.h)
+    add_executable(utils_test tests/utils_test.c src/utils.c include/utils.h
+                              tests/rle_test.c src/rle.c include/rle.h)
     target_link_libraries(utils_test Criterion::Criterion)
 
     add_custom_target(run_tests

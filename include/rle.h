@@ -10,7 +10,7 @@
 #include <string.h>
 #include "utils.h"
 
-int compress_rle(const char *inputPath, const char *outputPath);
-int decompress_rle(const char *inputPath, const char *outputPath);
+const char *compress_rle(const char *inputPath, const char *outputPath);
+const char *decompress_rle(const char *inputPath, const char *outputPath);
 
 #endif

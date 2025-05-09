@@ -8,7 +8,7 @@
   during compression using the RLE algorithm. The compressed string is saved
   in a file with the same name, but with a '.rle' extension.
 */
-int compress_rle(const char *inputPath, const char *outputPath)
+const char *compress_rle(const char *inputPath, const char *outputPath)
 {
     // File to compress.
     FILE *inputFile = fopen(inputPath, "rb");
@@ -26,14 +26,14 @@ int compress_rle(const char *inputPath, const char *outputPath)
     if (inputFile == NULL)
     {
         perror("/!\\ Error during file reading.\n");
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     // Check the results of memory allocation.
     if (result == NULL || tmp == NULL)
     {
         perror("/!\\ Error during memory allocation.\n");
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     // The termination character is added at the start, before concatenations
@@ -62,19 +62,19 @@ int compress_rle(const char *inputPath, const char *outputPath)
         {
             // Reallocation if we need more space.
             tmp = check_and_realloc(tmp, &tmpSize, tmpSize + 2, TMP_SIZE_INCREMENT);
-            if (tmp == NULL) { return EXIT_FAILURE; }
+            if (tmp == NULL) { return NULL; }
             
             int nbCharsWritten = snprintf(tmp, tmpSize, "%d%c", occurences, oldChar);
 
             if (nbCharsWritten <= 0)
             {
                 perror("/!\\ Error during compression.");
-                return EXIT_FAILURE;
+                return NULL;
             }
 
             // Reallocation if we need more space.
             result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
-            if (result == NULL) { return EXIT_FAILURE; }
+            if (result == NULL) { return NULL; }
     
             strncat(result, tmp, nbCharsWritten);
 
@@ -91,20 +91,20 @@ int compress_rle(const char *inputPath, const char *outputPath)
     int tmpLength = snprintf(NULL, 0, "%d", occurences);
     tmp = check_and_realloc(tmp, &tmpSize, tmpLength + 2, TMP_SIZE_INCREMENT);
 
-    if (tmp == NULL) { return EXIT_FAILURE; }
+    if (tmp == NULL) { return NULL; }
 
     snprintf(tmp, tmpSize, "%d%c", occurences, oldChar);
 
     // Reallocation if we need more space.
     result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
-    if (result == NULL) { return EXIT_FAILURE; }
+    if (result == NULL) { return NULL; }
 
     strncat(result, tmp, strlen(tmp));
 
     // The role of these lines is to manage the compressed file path.
     const char *fileName = get_file_name(inputPath);
     char *newPath = (char *) malloc(sizeof(char) * strlen(outputPath) + strlen(fileName) + 3 + 1);
-    if (newPath == NULL) { return EXIT_FAILURE; }
+    if (newPath == NULL) { return NULL; }
 
     strncpy(newPath, outputPath, strlen(outputPath));
     strncat(newPath, fileName, strlen(fileName));
@@ -116,7 +116,7 @@ int compress_rle(const char *inputPath, const char *outputPath)
         printf("/!\\ Error during file writing.\n");
         free(result);
         free(tmp);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     fwrite(result, sizeof(char), strlen(result), outputFile);
@@ -125,9 +125,8 @@ int compress_rle(const char *inputPath, const char *outputPath)
     fclose(outputFile);
     free(result);
     free(tmp);
-    free((char *) newPath);
 
-    return EXIT_SUCCESS;
+    return ((const char *) newPath);
 }
 
 // IN: Path to the file to be compressed and path to the compressed file.
@@ -138,7 +137,7 @@ int compress_rle(const char *inputPath, const char *outputPath)
   during decompression using the RLE algorithm. The decompressed string is saved
   in a file with the same name, but with a '.txt' extension.
 */
-int decompress_rle(const char *inputPath, const char *outputPath)
+const char *decompress_rle(const char *inputPath, const char *outputPath)
 {
     // File to decompress.
     FILE *inputFile = fopen(inputPath, "rb");
@@ -146,7 +145,7 @@ int decompress_rle(const char *inputPath, const char *outputPath)
     if (inputFile == NULL)
     {
         perror("/!\\ Error during file reading.\n");
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     // Contains the decompressed content.
@@ -159,7 +158,7 @@ int decompress_rle(const char *inputPath, const char *outputPath)
     if (result == NULL || tmp == NULL)
     {
         perror("/!\\ Error during memory allocation.\n");
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     char currentChar;
@@ -174,7 +173,7 @@ int decompress_rle(const char *inputPath, const char *outputPath)
             if (tmp == NULL)
             {
                 free(result);
-                return EXIT_FAILURE;
+                return NULL;
             }
 
             strncat(tmp, &currentChar, 1);
@@ -188,7 +187,7 @@ int decompress_rle(const char *inputPath, const char *outputPath)
             if (result == NULL)
             {
                 free(tmp);
-                return EXIT_FAILURE;
+                return NULL;
             }
 
             for (int i = 0; i != currentSize; i++)
@@ -207,17 +206,16 @@ int decompress_rle(const char *inputPath, const char *outputPath)
     // The role of these lines is to manage the compressed file path.
     const char *fileName = get_file_name(inputPath);
     char *newPath = (char *) malloc(sizeof(char) * strlen(outputPath) + strlen(fileName) + 3 + 1);
-    if (newPath == NULL) { return EXIT_FAILURE; }
+    if (newPath == NULL) { return NULL; }
 
     strncpy(newPath, outputPath, strlen(outputPath));
     strncat(newPath, fileName, strlen(fileName));
 
     FILE *outputFile = fopen(get_path_with_custom_extension(newPath, "txt"), "wb");
     fprintf(outputFile, result);
-
-    free((char *) newPath);
+    
     free(result);
     fclose(outputFile);
 
-    return EXIT_SUCCESS;
+    return newPath;
 }
