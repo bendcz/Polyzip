@@ -1,6 +1,6 @@
 <a name="top"></a>
 
-<h1 style="color: #9128bfff; font-size: 8rem;">Polyzip</h1>
+![icon](resources/icon.svg)
 
 [![language](https://img.shields.io/badge/language-C-blue)]()
 [![standard](https://img.shields.io/badge/C_Standard-C11-blue)]()
@@ -13,6 +13,8 @@
 - [How to Build](#-how-to-build)
 - [Download an already compiled version](#-download-an-already-compiled-version)
 - [Documentation](#-documentation)
+    - [How it works?](#how-it-works)
+    - [Usage](#usage)
 - [License](#-license)
 - [Contacts](#-contacts)
 
@@ -59,6 +61,11 @@ To active test compilation, `cmake ..` should be `cmake -DBUILD_TESTS=ON ..`.
 | Windows 10       | 64-bit           |      |         |
 
 ## 📚 Documentation
+
+### How it works?
+
+
+### Usage
 
 ## 📫 License
 
