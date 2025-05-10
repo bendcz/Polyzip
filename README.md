@@ -2,13 +2,13 @@
 
 ![icon](resources/icon.svg)
 
-[![language](https://img.shields.io/badge/language-C-blue)]()
-[![standard](https://img.shields.io/badge/C_Standard-C11-blue)]()
-[![OS](https://img.shields.io/badge/OS-linux,_windows-blue)]()
-[![license](https://img.shields.io/badge/license-Unlicense-brightbreen)]()
-[![Free](https://img.shields.io/badge/free-brightgreen)](#-license)
+[![language](https://img.shields.io/badge/language-c-9128bf?style=for-the-badge)]()
+[![standard](https://img.shields.io/badge/c_standard-c11-9128bf?style=for-the-badge)]()
+[![OS](https://img.shields.io/badge/OS-Windows,_Linux-9128bf?style=for-the-badge)]()
+[![license](https://img.shields.io/badge/license-Unlicense-brightbreen?style=for-the-badge)]()
+[![Free](https://img.shields.io/badge/free-brightgreen?style=for-the-badge)](#-license)
 
-## Table of Contents
+## :bookmark: Table of Contents
 - [About](#-about)
 - [How to Build](#-how-to-build)
 - [Download an already compiled version](#-download-an-already-compiled-version)
@@ -49,25 +49,23 @@ To active test compilation, `cmake ..` should be `cmake -DBUILD_TESTS=ON ..`.
 
 ## ⚡ Download an already-compiled version
 
-| Operating System | CPU Architecture | Link | SHA-512 |
-| ---------------- | ---------------- | ---- | ------- |
-| Ubuntu 22.04 (LTS) | 32-bit         |      |         |
-| Ubuntu 22.04 (LTS) | 64-bit         |      |         |
-| Debian 11 (Bullseye) | 32-bit       |      |         |
-| Debian 11 (Bullseye)  | 64-bit      |      |         |
-| Windows 11       | 32-bit           |      |         |
-| Windows 11       | 64-bit           |      |         |
-| Windows 10       | 32-bit           |      |         |
-| Windows 10       | 64-bit           |      |         |
+| Operating System | Link | SHA-512 |
+| ---------------- | ---- | ------- |
+| Windows 10 (32-bit) | | |
+| Windows 10 (64-bit) | | |
+| Windows 11 (32-bit) | | |
+| Windows 11 (32-bit) | | |
+| macOS Sequoia 15 | | |
+| Ubuntu 22.04 (32-bit) | | |
+| Ubuntu 22.04 (64-bit) | | |
+| Debian 11 (32-bit) | | |
+| Debian 11 (64-bit) | | |
 
 ## 📚 Documentation
-
 ### How it works?
-
-
 ### Usage
 
-## 📫 License
+## 📃 License
 
 This is free and unencumbered software released into the public domain.
 
