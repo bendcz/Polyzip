@@ -11,6 +11,7 @@
 ## Table of Contents
 - [About](#-about)
 - [How to Build](#-how-to-build)
+- [Download an already compiled version](#-download-an-already-compiled-version)
 - [Documentation](#-documentation)
 - [License](#-license)
 - [Contacts](#-contacts)
@@ -43,6 +44,19 @@ In your CLI:
 4. `cmake .. && make`
 
 To active test compilation, `cmake ..` should be `cmake -DBUILD_TESTS=ON ..`.
+
+## ⚡ Download an already-compiled version
+
+| Operating System | CPU Architecture | Link | SHA-512 |
+| ---------------- | ---------------- | ---- | ------- |
+| Ubuntu 22.04 (LTS) | 32-bit         |      |         |
+| Ubuntu 22.04 (LTS) | 64-bit         |      |         |
+| Debian 11 (Bullseye) | 32-bit       |      |         |
+| Debian 11 (Bullseye)  | 64-bit      |      |         |
+| Windows 11       | 32-bit           |      |         |
+| Windows 11       | 64-bit           |      |         |
+| Windows 10       | 32-bit           |      |         |
+| Windows 10       | 64-bit           |      |         |
 
 ## 📚 Documentation
 
