@@ -30,9 +30,9 @@ Polyzip tries to adhere to **simple**, **secure** and **tested** code.
 
 **Dependencies:**
 
-- CMake 3.30 (>=)
-- Criterion
-- OpenSSL
+- CMake (3.30 >=),
+- Criterion (for tests only),
+- OpenSSL (for tests only).
 
 Compiling the project is very easy.  
 In your CLI:
@@ -74,5 +74,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 For more information, please refer to <https://unlicense.org>
 
 ## 📫 Contacts
+
 
 [Back to top](#top)

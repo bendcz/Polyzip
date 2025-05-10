@@ -10,13 +10,15 @@ typedef struct Node Node;
 struct Node {
     Node *leftChild;
     Node *rightChild;
-    int value;
+    int symbol;
+    int weight;
 };
 
-Node *create_node(int value);
-Node *insert_node(Node *root, int value);
-bool search(Node *root, int value);
+Node *create_node(int symbol, int weight);
+Node *insert_node(Node *root, int symbol, int weight);
+Node *delete_node(Node *root, int symbol);
 Node *find_minimum(Node *root);
-bool delete_node(Node *root, int value);
-
+Node *search_by_symbol(Node *root, int symbol);
+Node *search_by_weight(Node *root, int weight);
+bool is_leaf(Node *root);
 #endif

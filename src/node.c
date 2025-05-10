@@ -1,6 +1,6 @@
 #include "../include/node.h"
 
-Node *create_node(int value)
+Node *create_node(int symbol, int weight)
 {
     Node *node = (Node *) malloc(sizeof(Node));
 
@@ -10,49 +10,41 @@ Node *create_node(int value)
         return NULL;
     }
 
-    node->value = value;
+    node->symbol = symbol;
+    node->weight = weight;
     node->leftChild = NULL;
     node->rightChild = NULL;
 
     return node;
 }
 
-Node *insert_node(Node *root, int value)
+Node *insert_node(Node *root, int symbol, int weight)
 {
     if (root == NULL)
     {
-        root = create_node(value);
+        root = create_node(symbol, weight);
     }
-    else if (value <= root->value)
+    else if (weight <= root->weight)
     {
-        insert_node(root->leftChild, value);
+        insert_node(root->leftChild, symbol, weight);
     }
     else
     {
-        insert_node(root->rightChild, value);
+        insert_node(root->rightChild, symbol, weight);
     }
 
     return root;
 }
 
-bool search(Node *root, int value)
+Node *delete_node(Node *root, int symbol)
 {
     if (root == NULL)
     {
-        return false;
+        return NULL;
     }
-    else if (root->value == value)
-    {
-        return true;
-    }
-    else if (value <= root->value)
-    {
-        return search(root->leftChild, value);
-    }
-    else
-    {
-        return search(root->rightChild, value);
-    }
+
+    //todo
+
 }
 
 Node *find_minimum(Node *root)
@@ -63,18 +55,53 @@ Node *find_minimum(Node *root)
     }
     else if (root->leftChild == NULL)
     {
-        return root->value;
+        return root;
     }
 
     return find_minimum(root->leftChild);
 }
 
-bool delete_node(Node *root, int value)
+Node *search_by_symbol(Node *root, int symbol)
 {
     if (root == NULL)
     {
-        return false;
+        return NULL;
     }
+    else if (root->symbol == symbol)
+    {
+        return root;
+    }
+    else if (root->leftChild != NULL)
+    {
+        return search_by_symbol(root->leftChild, symbol);
+    }
+    else if (root->rightChild != NULL)
+    {
+        return search_by_symbol(root->rightChild, symbol);
+    }
+}
 
-    Node *node = search(root, value);
+Node* search_by_weight(Node *root, int weight)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+    else if (root->weight == weight)
+    {
+        return root;
+    }
+    else if (weight <= root->weight)
+    {
+        return search(root->leftChild, weight);
+    }
+    else
+    {
+        return search(root->rightChild, weight);
+    }
+}
+
+bool is_leaf(Node *root)
+{
+    return (root->leftChild == NULL && root->rightChild == NULL);
 }
