@@ -23,14 +23,7 @@ const char *compress_huffman(const char *inputPath, const char *outputPath)
     int byte;
     while (fread(&byte, sizeof(int), 1, inputFile) == 1)
     {
-        if (search_by_symbol(tree->root, byte) == NULL)
-        {
-
-        }
-        else
-        {
-
-        }
+        tree = add_symbol(tree, byte);
     }
 }
 

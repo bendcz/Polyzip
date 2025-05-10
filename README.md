@@ -4,7 +4,7 @@
 
 [![language](https://img.shields.io/badge/language-c-9128bf?style=for-the-badge)]()
 [![standard](https://img.shields.io/badge/c_standard-c11-9128bf?style=for-the-badge)]()
-[![OS](https://img.shields.io/badge/OS-Windows,_Linux-9128bf?style=for-the-badge)]()
+[![OS](https://img.shields.io/badge/OS-Windows,_macOS,_Linux-9128bf?style=for-the-badge)]()
 [![license](https://img.shields.io/badge/license-Unlicense-brightbreen?style=for-the-badge)]()
 [![Free](https://img.shields.io/badge/free-brightgreen?style=for-the-badge)](#-license)
 

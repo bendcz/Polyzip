@@ -21,4 +21,5 @@ Node *find_minimum(Node *root);
 Node *search_by_symbol(Node *root, int symbol);
 Node *search_by_weight(Node *root, int weight);
 bool is_leaf(Node *root);
+
 #endif
