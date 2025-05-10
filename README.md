@@ -5,8 +5,9 @@
 [![language](https://img.shields.io/badge/language-c-9128bf?style=for-the-badge)]()
 [![standard](https://img.shields.io/badge/c_standard-c11-9128bf?style=for-the-badge)]()
 [![OS](https://img.shields.io/badge/OS-Windows,_macOS,_Linux-9128bf?style=for-the-badge)]()
+[![Dynamic Regex Badge](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fgithub.com%2Fbendcz%2FPolyzip%2Factions%2Fworkflows%2Fgithub-code-scanning%2Fcodeql%2Fbadge.svg&search=%3Ctitle%3E%5B%5E%3C%5D*%20-%20(%5B%5E%3C%5D%2B)%3C%5C%2Ftitle%3E&replace=%241&style=for-the-badge&logo=github&label=CodeQL&color=brightbreen)
+]()
 [![license](https://img.shields.io/badge/license-Unlicense-brightbreen?style=for-the-badge)]()
-[![Free](https://img.shields.io/badge/free-brightgreen?style=for-the-badge)](#-license)
 
 ## :bookmark: Table of Contents
 - [About](#-about)
