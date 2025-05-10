@@ -1,30 +1,41 @@
 <a name="top"></a>
 
-<h1 style="color: #9128bfff; font-size: 8rem;">Polyzip</h1>
+![icon](resources/icon.svg)
 
-[![language](https://img.shields.io/badge/language-C-blue)]()
-[![standard](https://img.shields.io/badge/C_Standard-C11-blue)]()
-[![OS](https://img.shields.io/badge/OS-linux,_windows-blue)]()
-[![license](https://img.shields.io/badge/license-Unlicense-brightbreen)]()
-[![Free](https://img.shields.io/badge/free-brightgreen)](#-license)
+[![language](https://img.shields.io/badge/language-c-9128bf?style=for-the-badge)]()
+[![standard](https://img.shields.io/badge/c_standard-c11-9128bf?style=for-the-badge)]()
+[![OS](https://img.shields.io/badge/OS-Windows,_macOS,_Linux-9128bf?style=for-the-badge)]()
+[![license](https://img.shields.io/badge/license-Unlicense-brightbreen?style=for-the-badge)]()
+[![Free](https://img.shields.io/badge/free-brightgreen?style=for-the-badge)](#-license)
 
-## Table of Contents
+## :bookmark: Table of Contents
 - [About](#-about)
 - [How to Build](#-how-to-build)
+- [Download an already compiled version](#-download-an-already-compiled-version)
 - [Documentation](#-documentation)
+    - [How it works?](#how-it-works)
+    - [Usage](#usage)
 - [License](#-license)
 - [Contacts](#-contacts)
 
 ## 🚀 About
 
-**Polyzip is a program written in C11 for compressing and decompressing files using the following algorithms:**
+Polyzip is a program written in C11 for **compressing and decompressing files** using the following algorithms:
 
 - RLE (Run-Length Encoding),
-- Huffman (TODO).
+- Huffman (adptative),
+- LZW (Lempel-Ziv-Welch) (TODO),
+- DEFLATE (TODO).
 
 Polyzip tries to adhere to **simple**, **secure** and **tested** code.
 
 ## 🔨 How to Build
+
+**Dependencies:**
+
+- CMake (3.30 >=),
+- Criterion (for tests only),
+- OpenSSL (for tests only).
 
 Compiling the project is very easy.  
 In your CLI:
@@ -36,9 +47,25 @@ In your CLI:
 
 To active test compilation, `cmake ..` should be `cmake -DBUILD_TESTS=ON ..`.
 
-## 📚 Documentation
+## ⚡ Download an already-compiled version
 
-## 📫 License
+| Operating System | Link | SHA-512 |
+| ---------------- | ---- | ------- |
+| Windows 10 (32-bit) | | |
+| Windows 10 (64-bit) | | |
+| Windows 11 (32-bit) | | |
+| Windows 11 (32-bit) | | |
+| macOS Sequoia 15 | | |
+| Ubuntu 22.04 (32-bit) | | |
+| Ubuntu 22.04 (64-bit) | | |
+| Debian 11 (32-bit) | | |
+| Debian 11 (64-bit) | | |
+
+## 📚 Documentation
+### How it works?
+### Usage
+
+## 📃 License
 
 This is free and unencumbered software released into the public domain.
 
@@ -66,5 +93,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 For more information, please refer to <https://unlicense.org>
 
 ## 📫 Contacts
+
 
 [Back to top](#top)
