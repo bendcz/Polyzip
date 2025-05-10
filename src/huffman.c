@@ -4,9 +4,11 @@ const char *compress_huffman(const char *inputPath, const char *outputPath)
 {
     // File to compress.
     FILE *inputFile = fopen(inputPath, "rb");
+    // Compressed file.
+    FILE *outputFile = fopen(outputPath, "wb");
 
     // Check that the file to be compressed has been opened successfully.
-    if (inputFile == NULL)
+    if (inputFile == NULL || outputFile == NULL)
     {
         perror("/!\\ Error during file reading.\n");
         return NULL;
@@ -14,7 +16,7 @@ const char *compress_huffman(const char *inputPath, const char *outputPath)
 
     Tree *tree = initialize_tree();
 
-    if (tree = NULL)
+    if (tree == NULL)
     {
         perror("/!\\ Error during tree initialization.\n");
         return NULL;
@@ -25,9 +27,26 @@ const char *compress_huffman(const char *inputPath, const char *outputPath)
     {
         tree = add_symbol(tree, byte);
     }
+
+    fclose(inputFile);
+    fclose(outputFile);
+
+    return "";
 }
 
 const char *decompress_huffman(const char *inputPath, const char *outputPath)
 {
+    // File to decompress.
+    FILE *inputFile = fopen(inputPath, "rb");
+    // Decompressed file.
+    FILE *outputFile = fopen(outputPath, "wb");
 
+    // Check that the file to be compressed has been opened successfully.
+    if (inputFile == NULL || outputFile == NULL)
+    {
+        perror("/!\\ Error during file reading.\n");
+        return NULL;
+    }
+
+    return "";
 }

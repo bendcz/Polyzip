@@ -1,5 +1,5 @@
-#ifndef RLE_H
-#define RLE_H
+#ifndef HUFFMAN_H
+#define HUFFMAN_H
 
 #include <stdio.h>
 #include <stdlib.h>
