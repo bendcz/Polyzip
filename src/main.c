@@ -35,11 +35,11 @@ int main(int argc, char *argv[])
     {
         if (strncmp(argv[2], "--c", 3) == 0)
         {
-            compress_huffman(argv[3], argv[4]);
+            compress_static_huffman(argv[3], argv[4]);
         }
         else if (strncmp(argv[2], "--d", 3) == 0)
         {
-            decompress_huffman(argv[3], argv[4]);
+            decompress_static_huffman(argv[3], argv[4]);
         }
     }
 

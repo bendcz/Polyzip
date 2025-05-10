@@ -6,7 +6,15 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-add_executable(Polyzip src/main.c src/rle.c src/utils.c include/rle.h include/utils.h)
+file(GLOB INCLUDES
+    "include/*.h"
+)
+
+file(GLOB SOURCES
+    "src/*.c"
+)
+
+add_executable(Polyzip ${SOURCES} ${INCLUDES})
 target_compile_options(Polyzip PRIVATE -g -O0 -Wall -Wextra)
 
 option(BUILD_TESTS "Build tests" OFF)
