@@ -17,14 +17,22 @@
 
 ## 🚀 About
 
-**Polyzip is a program written in C11 for compressing and decompressing files using the following algorithms:**
+Polyzip is a program written in C11 for **compressing and decompressing files** using the following algorithms:
 
 - RLE (Run-Length Encoding),
-- Huffman (TODO).
+- Huffman (adptative),
+- LZW (Lempel-Ziv-Welch) (TODO),
+- DEFLATE (TODO).
 
 Polyzip tries to adhere to **simple**, **secure** and **tested** code.
 
 ## 🔨 How to Build
+
+**Dependencies:**
+
+- CMake 3.30 (>=)
+- Criterion
+- OpenSSL
 
 Compiling the project is very easy.  
 In your CLI:

@@ -54,3 +54,27 @@ bool search(Node *root, int value)
         return search(root->rightChild, value);
     }
 }
+
+Node *find_minimum(Node *root)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+    else if (root->leftChild == NULL)
+    {
+        return root->value;
+    }
+
+    return find_minimum(root->leftChild);
+}
+
+bool delete_node(Node *root, int value)
+{
+    if (root == NULL)
+    {
+        return false;
+    }
+
+    Node *node = search(root, value);
+}

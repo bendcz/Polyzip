@@ -16,5 +16,7 @@ struct Node {
 Node *create_node(int value);
 Node *insert_node(Node *root, int value);
 bool search(Node *root, int value);
+Node *find_minimum(Node *root);
+bool delete_node(Node *root, int value);
 
 #endif
