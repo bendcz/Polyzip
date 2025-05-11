@@ -1,6 +1,6 @@
 #include "../include/node.h"
 
-Node *create_node(int symbol, int weight)
+Node *create_node(char symbol, int weight)
 {
     Node *node = (Node *) malloc(sizeof(Node));
 
@@ -18,7 +18,7 @@ Node *create_node(int symbol, int weight)
     return node;
 }
 
-Node *insert_node(Node *root, int symbol, int weight)
+Node *insert_node(Node *root, char symbol, int weight)
 {
     if (root == NULL)
     {
@@ -88,7 +88,7 @@ Node *find_minimum(Node *root)
     return find_minimum(root->leftChild);
 }
 
-Node *search_by_symbol(Node *root, int symbol)
+Node *search_by_symbol(Node *root, char symbol)
 {
     if (root == NULL)
     {
@@ -127,6 +127,33 @@ Node* search_by_weight(Node *root, int weight)
     {
         return search_by_weight(root->rightChild, weight);
     }
+}
+
+Node * find_nyt_parent(Node *root, Node *nytNode)
+{
+    if (root == NULL || nytNode == NULL)
+    {
+        return NULL;
+    }
+
+    if (root->leftChild == nytNode || root->rightChild == nytNode)
+    {
+        return root;
+    }
+
+    Node *leftResult = find_nyt_parent(root->leftChild, nytNode);
+    if (leftResult != NULL)
+    {
+        return leftResult;
+    }
+
+    Node *rightResult = find_nyt_parent(root->rightChild, nytNode);
+    if (rightResult != NULL)
+    {
+        return rightResult;
+    }
+
+    return NULL;
 }
 
 bool is_leaf(Node *root)

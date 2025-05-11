@@ -13,5 +13,6 @@ struct Tree {
 
 Tree *initialize_tree();
 Tree *add_symbol(Tree *tree, int symbol);
+void free_tree(Tree *tree);
 
 #endif
