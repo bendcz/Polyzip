@@ -19,7 +19,7 @@ Tree *initialize_tree()
 
 Tree *add_symbol(Tree *tree, int symbol)
 {
-    Node *symbolNode = search_by_symbol(tree, symbol);
+    Node *symbolNode = search_by_symbol(tree->root, symbol);
 
     if (symbolNode != NULL)
     {

@@ -8,9 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "errors.h"
 #include "utils.h"
 
-const char *compress_rle(const char *inputPath, const char *outputPath);
-const char *decompress_rle(const char *inputPath, const char *outputPath);
+int compress_rle(const char *inputPath, const char *outputPath);
+int decompress_rle(const char *inputPath, const char *outputPath);
 
 #endif

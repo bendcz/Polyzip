@@ -15,7 +15,14 @@ file(GLOB SOURCES
 )
 
 add_executable(Polyzip ${SOURCES} ${INCLUDES})
-target_compile_options(Polyzip PRIVATE -g -O0 -Wall -Wextra)
+option(DEBUG "Debug mode" OFF)
+
+if (DEBUG)
+    target_compile_options(Polyzip PRIVATE -g -O0 -Wall -Wextra)
+else (
+    target_compile_options(Polyzip PRIVATE -std=c11 -O3 -funroll-loops -Os -flto -fstack-protector -D_FORTIFY_SOURCE=2 -fPIE -pie -fstack-clash-protection)
+)
+endif()
 
 option(BUILD_TESTS "Build tests" OFF)
 

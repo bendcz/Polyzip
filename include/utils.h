@@ -12,11 +12,20 @@
     #define PATH_SEPARATOR "/"
 #endif
 
+struct Files
+{
+    FILE *inputFile;
+    FILE *outputFile;
+};
+
 const char *get_file_extension(const char *filePath);
 const char *get_file_name(const char *filePath);
 const char *get_path_without_extension(const char *filePath);
 const char *get_path_with_custom_extension(const char *filePath, const char *extension);
 
 char *check_and_realloc(char *buffer, size_t *bufferSize, size_t requiredSize, size_t increment);
+
+struct Files *get_files(const char *inputPath, const char *outputPath, const char *outputExtension);
+
 
 #endif

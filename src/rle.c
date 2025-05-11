@@ -1,84 +1,53 @@
 #include "../include/rle.h"
 
 // IN: Path to the file to be compressed and path to the compressed file.
-// OUT: 0 (success) or 1 (failure).
+// OUT: Error/success code, more details in include/errors.h.
 /*
   This function opens the file passed as an argument, allocates memory
   blocks and manages whether they are too small, and uses these same blocks
   during compression using the RLE algorithm. The compressed string is saved
   in a file with the same name, but with a '.rle' extension.
 */
-const char *compress_rle(const char *inputPath, const char *outputPath)
+int compress_rle(const char *inputPath, const char *outputPath)
 {
-    // File to compress.
-    FILE *inputFile = fopen(inputPath, "rb");
+    struct Files *files = get_files(inputPath, outputPath, "rle");
 
-    // Contains output content.
-    size_t resultSize = RESULT_SIZE_INCREMENT;
-    char *result = (char *) malloc(resultSize);
-    
-    // Contains the content to be concatenated with the result as the file
-    // is read during the compression phase.
-    size_t tmpSize = TMP_SIZE_INCREMENT;
-    char *tmp = (char *) malloc(tmpSize);
-
-    // Check that the file to be compressed has been opened successfully.
-    if (inputFile == NULL)
+    if (files == NULL || files->inputFile == NULL || files->outputFile == NULL)
     {
-        perror("/!\\ Error during file reading.\n");
-        return NULL;
+        return print_error_message("compress_rle", ERROR_FILE_ALLOCATION);
     }
 
-    // Check the results of memory allocation.
-    if (result == NULL || tmp == NULL)
-    {
-        perror("/!\\ Error during memory allocation.\n");
-        return NULL;
-    }
-
-    // The termination character is added at the start, before concatenations
-    // in the rest of the code.
-    result[0] = '\0';
-    tmp[0] = '\0';
-
-    // Obtain the first character of the file.
-    char oldChar = fgetc(inputFile);
-
-    // This variable will be used to store the current char in the file read loop.
-    char currentChar;
-
-    // This variable stores the number of occurences of the current character.
+    char oldByte = 0;
+    char currentByte = 0;
     unsigned int occurences = 1;
     
+    if (fread(&oldByte, sizeof(char), 1, files->inputFile) != 1)
+    {
+        fclose(files->inputFile);
+        fclose(files->outputFile);
+        free(files);
+        return print_error_message("compress_rle", ERROR_FILE_READ);
+    }
+    
     // Loop over the file, character by character.
-    while (fread(&currentChar, sizeof(char), 1, inputFile) == 1)
+    while (fread(&currentByte, sizeof(char), 1, files->inputFile) == 1)
     {
         // If the current character is not equal to the old one, we should remember
         // the number of occurences and the old character.
         // ex: "aaab"
         // -> When we reach the 'b' character, we need to store "3a".
         // Otherwise, it's the same characters and you just increment the occurences counter.
-        if (currentChar != oldChar)
-        {
-            // Reallocation if we need more space.
-            tmp = check_and_realloc(tmp, &tmpSize, tmpSize + 2, TMP_SIZE_INCREMENT);
-            if (tmp == NULL) { return NULL; }
-            
-            int nbCharsWritten = snprintf(tmp, tmpSize, "%d%c", occurences, oldChar);
-
-            if (nbCharsWritten <= 0)
+        if (currentByte != oldByte)
+        {   
+            if (fprintf(files->outputFile, "%d%c", occurences, oldByte) < 0)
             {
-                perror("/!\\ Error during compression.");
-                return NULL;
+                fclose(files->inputFile);
+                fclose(files->outputFile);
+                free(files);
+                return print_error_message("compress_rle", ERROR_FILE_WRITE);
             }
 
-            // Reallocation if we need more space.
-            result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
-            if (result == NULL) { return NULL; }
-    
-            strncat(result, tmp, nbCharsWritten);
-
-            oldChar = currentChar;
+            oldByte = currentByte;
             occurences = 1;
         }
         else
@@ -87,115 +56,82 @@ const char *compress_rle(const char *inputPath, const char *outputPath)
         }
     }
 
-    // This variable is used in oder to store the length of tmp.
-    int tmpLength = snprintf(NULL, 0, "%d", occurences);
-    tmp = check_and_realloc(tmp, &tmpSize, tmpLength + 2, TMP_SIZE_INCREMENT);
-
-    if (tmp == NULL) { return NULL; }
-
-    snprintf(tmp, tmpSize, "%d%c", occurences, oldChar);
-
-    // Reallocation if we need more space.
-    result = check_and_realloc(result, &resultSize, strlen(result) + strlen(tmp) + 1, RESULT_SIZE_INCREMENT);
-    if (result == NULL) { return NULL; }
-
-    strncat(result, tmp, strlen(tmp));
-
-    // The role of these lines is to manage the compressed file path.
-    const char *fileName = get_file_name(inputPath);
-    char *newPath = (char *) malloc(sizeof(char) * strlen(outputPath) + strlen(fileName) + 3 + 1);
-    if (newPath == NULL) { return NULL; }
-
-    strncpy(newPath, outputPath, strlen(outputPath));
-    strncat(newPath, fileName, strlen(fileName));
-
-    const char * finalPath = get_path_with_custom_extension(newPath, "rle");
-
-    FILE *outputFile = fopen(finalPath, "wb");
-
-    if (outputFile == NULL)
+    if (fprintf(files->outputFile, "%d%c", occurences, oldByte) < 0)
     {
-        printf("/!\\ Error during file writing.\n");
-        free(result);
-        free(tmp);
-        return NULL;
+        fclose(files->inputFile);
+        fclose(files->outputFile);
+        free(files);
+        return print_error_message("compress_rle", ERROR_FILE_WRITE);
     }
 
-    fwrite(result, sizeof(char), strlen(result), outputFile);
-    
-    fclose(inputFile);
-    fclose(outputFile);
-    free(result);
-    free(tmp);
-    free((char *) newPath);
+    fclose(files->inputFile);
+    fclose(files->outputFile);
+    free(files);
 
-    return (finalPath);
+    return SUCCESS;
 }
 
 // IN: Path to the file to be compressed and path to the compressed file.
-// OUT: 0 (success) or 1 (failure).
+// OUT: Error/success code, more details in include/errors.h.
 /*
   This function opens the file passed as an argument, allocates memory
   blocks and manages whether they are too small, and uses these same blocks
   during decompression using the RLE algorithm. The decompressed string is saved
   in a file with the same name, but with a '.txt' extension.
 */
-const char *decompress_rle(const char *inputPath, const char *outputPath)
+int decompress_rle(const char *inputPath, const char *outputPath)
 {
-    // File to decompress.
-    FILE *inputFile = fopen(inputPath, "rb");
+    struct Files *files = get_files(inputPath, outputPath, "txt");
 
-    if (inputFile == NULL)
+    if (files == NULL || files->inputFile == NULL || files->outputFile == NULL)
     {
-        perror("/!\\ Error during file reading.\n");
-        return NULL;
+        return print_error_message("decompress_rle", ERROR_FILE_ALLOCATION);
     }
-
-    // Contains the decompressed content.
-    size_t resultSize = RESULT_SIZE_INCREMENT;
-    char *result = (char *) malloc(resultSize);
 
     size_t tmpSize = TMP_SIZE_INCREMENT;
     char *tmp = (char *) malloc(tmpSize);
 
-    if (result == NULL || tmp == NULL)
+    if (tmp == NULL)
     {
-        perror("/!\\ Error during memory allocation.\n");
-        return NULL;
+        fclose(files->inputFile);
+        fclose(files->outputFile);
+        free(files);
+        return print_error_message("decompress_rle", ERROR_MEMORY_ALLOCATION);
     }
 
-    char currentChar;
+    char currentByte;
     int currentSize;
     
-    while (fread(&currentChar, sizeof(char), 1, inputFile) == 1)
+    while (fread(&currentByte, sizeof(char), 1, files->inputFile) == 1)
     {
-        if (isdigit(currentChar))
+        if (isdigit(currentByte))
         {
             tmp = check_and_realloc(tmp, &tmpSize, tmpSize + 2, TMP_SIZE_INCREMENT);
 
             if (tmp == NULL)
             {
-                free(result);
-                return NULL;
+                fclose(files->inputFile);
+                fclose(files->outputFile);
+                free(files);
+                return print_error_message("decompress_rle", ERROR_MEMORY_ALLOCATION);
             }
 
-            strncat(tmp, &currentChar, 1);
+            strncat(tmp, &currentByte, 1);
         }
         else
         {
             currentSize = atoi(tmp);
 
-            result = check_and_realloc(result, &resultSize, resultSize + currentSize + 1, RESULT_SIZE_INCREMENT);
-
-            if (result == NULL)
-            {
-                free(tmp);
-                return NULL;
-            }
-
             for (int i = 0; i != currentSize; i++)
             {
-                strncat(result, &currentChar, 1);
+                if (fwrite(&currentByte, sizeof(char), 1, files->outputFile) != 1)
+                {
+                    free(tmp);
+                    fclose(files->inputFile);
+                    fclose(files->outputFile);
+                    free(files);
+                    return print_error_message("decompress_rle", ERROR_FILE_WRITE);
+                }
             }
 
             currentSize = 0;
@@ -204,24 +140,9 @@ const char *decompress_rle(const char *inputPath, const char *outputPath)
     }
 
     free(tmp);
-    fclose(inputFile);
+    fclose(files->inputFile);
+    fclose(files->outputFile);
+    free(files);
 
-    // The role of these lines is to manage the compressed file path.
-    const char *fileName = get_file_name(inputPath);
-    char *newPath = (char *) malloc(sizeof(char) * strlen(outputPath) + strlen(fileName) + 3 + 1);
-    if (newPath == NULL) { return NULL; }
-
-    strncpy(newPath, outputPath, strlen(outputPath));
-    strncat(newPath, fileName, strlen(fileName));
-
-    const char * finalPath = get_path_with_custom_extension(newPath, "txt");
-
-    FILE *outputFile = fopen(finalPath, "wb");
-    fprintf(outputFile, result);
-    
-    free(result);
-    fclose(outputFile);
-    free((char *) newPath);
-
-    return finalPath;
+    return SUCCESS;
 }
