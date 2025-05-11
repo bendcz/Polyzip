@@ -120,3 +120,67 @@ char *check_and_realloc(char *buffer, size_t *bufferSize, size_t requiredSize, s
     
     return buffer;
 }
+
+struct Files *get_files(const char *inputPath, const char *outputPath, const char *outputExtension)
+{
+    FILE *inputFile = fopen(inputPath, "rb");
+
+    if (inputFile == NULL)
+    {
+        perror("/!\\ Error opening input file.\n");
+        return NULL;
+    }
+
+    const char *fileName = get_file_name(inputPath);
+    if (fileName == NULL)
+    {
+        perror("/!\\ Error getting file name.\n");
+        fclose(inputFile);
+        return NULL;
+    }
+
+    char *newPath = (char *) malloc(strlen(outputPath) + strlen(fileName) + 3 + 1);
+    if (newPath == NULL)
+    {
+        perror("/!\\ Error allocating memory for new path.\n");
+        fclose(inputFile);
+        return NULL;
+    }
+
+    strncpy(newPath, outputPath, strlen(outputPath));
+    strncat(newPath, fileName, strlen(fileName));
+
+    const char *finalPath = get_path_with_custom_extension(newPath, outputExtension);
+    if (finalPath == NULL)
+    {
+        perror("/!\\ Error getting final path.\n");
+        free(newPath);
+        fclose(inputFile);
+        return NULL;
+    }
+
+    FILE *outputFile = fopen(finalPath, "wb");
+    if (outputFile == NULL)
+    {
+        perror("/!\\ Error opening output file.\n");
+        free(newPath);
+        fclose(inputFile);
+        return NULL;
+    }
+
+    struct Files *result = (struct Files *)malloc(sizeof(struct Files));
+    if (result == NULL)
+    {
+        perror("/!\\ Error allocating memory for result.\n");
+        free(newPath);
+        fclose(inputFile);
+        fclose(outputFile);
+        return NULL;
+    }
+
+    result->inputFile = inputFile;
+    result->outputFile = outputFile;
+
+    free(newPath);
+    return result;
+}

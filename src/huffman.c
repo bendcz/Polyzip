@@ -1,52 +1,31 @@
 #include "../include/huffman.h"
 
-const char *compress_huffman(const char *inputPath, const char *outputPath)
+int compress_huffman(const char *inputPath, const char *outputPath)
 {
-    // File to compress.
-    FILE *inputFile = fopen(inputPath, "rb");
-    // Compressed file.
-    FILE *outputFile = fopen(outputPath, "wb");
+    struct Files *files = get_files(inputPath, outputPath, "hfm");
 
-    // Check that the file to be compressed has been opened successfully.
-    if (inputFile == NULL || outputFile == NULL)
+    if (files == NULL || files->inputFile == NULL || files->outputFile == NULL)
     {
-        perror("/!\\ Error during file reading.\n");
-        return NULL;
+        return print_error_message("compress_huffman", ERROR_FILE_ALLOCATION);
     }
 
     Tree *tree = initialize_tree();
 
     if (tree == NULL)
     {
-        perror("/!\\ Error during tree initialization.\n");
-        return NULL;
+        return print_error_message("compress_huffman", ERROR_MEMORY_ALLOCATION);
     }
 
     int byte;
-    while (fread(&byte, sizeof(int), 1, inputFile) == 1)
+    while (fread(&byte, sizeof(int), 1, files->inputFile) == 1)
     {
         tree = add_symbol(tree, byte);
     }
 
-    fclose(inputFile);
-    fclose(outputFile);
-
-    return "";
+    return SUCCESS;
 }
 
-const char *decompress_huffman(const char *inputPath, const char *outputPath)
+int decompress_huffman(const char *inputPath, const char *outputPath)
 {
-    // File to decompress.
-    FILE *inputFile = fopen(inputPath, "rb");
-    // Decompressed file.
-    FILE *outputFile = fopen(outputPath, "wb");
-
-    // Check that the file to be compressed has been opened successfully.
-    if (inputFile == NULL || outputFile == NULL)
-    {
-        perror("/!\\ Error during file reading.\n");
-        return NULL;
-    }
-
-    return "";
+    return SUCCESS;
 }
