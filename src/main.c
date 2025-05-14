@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     if (argc < 5)
     {
         printf("\n/!\\ Error during program call.\n");
-        printf("Usage: ./polyzip -<c|d> -rle <INPUT_PATH> <OUTPUT_PATH> <CUSTOM_NAME>?\n");
+        printf("Usage: ./polyzip -<c|d> -rle <INPUT_PATH> <OUTPUT_PATH>\n");
         return EXIT_FAILURE;
     }
 

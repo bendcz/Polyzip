@@ -71,6 +71,17 @@ Then, you have three choices.
 ### How it works?
 ### Usage
 
+In CLI: `./polyzip -<c|d> -<ALGORITHM> <INPUT_PATH> <OUTPUT_PATH>`,
+
+* `-c`: compression,<br>
+
+* `-d`: decompression,
+* `-rle`: using the RLE algorithm,
+* `-huffman`: using the Huffman algorithm,
+* `-lzw`: using the LZW algorithm,
+* `<INPUT_PATH>`: path to the file to compress/decompress,
+* `<OUTPUT_PATH>`: directory where the result should be written.
+
 ## 📃 License
 
 This is free and unencumbered software released into the public domain.
