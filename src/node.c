@@ -1,167 +1,214 @@
 #include "../include/node.h"
+static unsigned int ORDER = 512;
 
-Node *create_node(char symbol, int weight)
+Node *create_node(int symbol, bool isNYT)
 {
     Node *node = (Node *) malloc(sizeof(Node));
 
     if (node == NULL)
     {
-        perror("/!\\ Error during node memory allocation.\n");
+        print_error_message("create_node", ERROR_MEMORY_ALLOCATION);
         return NULL;
     }
 
     node->symbol = symbol;
-    node->weight = weight;
+    node->weight = 0;
+    
+    node->parent = NULL;
     node->leftChild = NULL;
     node->rightChild = NULL;
+
+    node->order = ORDER--;
+    node->isNYT = isNYT;
+    node->isLeaf = isNYT || symbol != NULL_VALUE;
 
     return node;
 }
 
-Node *insert_node(Node *root, char symbol, int weight)
+Node *initialize_tree()
 {
-    if (root == NULL)
-    {
-        root = create_node(symbol, weight);
-    }
-    else if (weight <= root->weight)
-    {
-        root->leftChild = insert_node(root->leftChild, symbol, weight);
-    }
-    else
-    {
-        root->rightChild = insert_node(root->rightChild, symbol, weight);
-    }
-
-    return root;
+    return create_node(NULL_VALUE, true);
 }
 
-Node *delete_node(Node *root, int weight)
+Node *find_nyt_node(Node *root)
 {
     if (root == NULL)
     {
         return NULL;
     }
-
-    if (root->weight <= weight)
-    {
-        root->leftChild = delete_node(root->leftChild, weight);
-    }
-    else if (root->weight > weight)
-    {
-        root->rightChild = delete_node(root->rightChild, weight);
-    }
-    else
-    {
-        if (root->leftChild == NULL)
-        {
-            Node *tmp = root->rightChild;
-            free(root);
-            return tmp;
-        }
-        else if (root->rightChild == NULL)
-        {
-            Node *tmp = root->leftChild;
-            free(root);
-            return tmp;
-        }
-
-        Node *tmp = find_minimum(root->rightChild);
-        root->weight = tmp->weight;
-        root->rightChild = delete_node(root->rightChild, tmp->weight);
-    }
-
-    return root;
-}
-
-Node *find_minimum(Node *root)
-{
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    else if (root->leftChild == NULL)
+    else if (root->isNYT)
     {
         return root;
     }
 
-    return find_minimum(root->leftChild);
-}
-
-Node *search_by_symbol(Node *root, char symbol)
-{
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    else if (root->symbol == symbol)
-    {
-        return root;
-    }
-
-    Node *leftResult = search_by_symbol(root->leftChild, symbol);
-
+    Node *leftResult = find_nyt_node(root->leftChild);
     if (leftResult != NULL)
     {
         return leftResult;
     }
 
-    return search_by_symbol(root->rightChild, symbol);
+    return find_nyt_node(root->rightChild);
 }
 
-Node* search_by_weight(Node *root, int weight)
+Node *find_node_by_symbol(Node *root, int symbol)
 {
     if (root == NULL)
     {
         return NULL;
     }
-    else if (root->weight == weight)
+    else if (root->isLeaf && root->symbol == symbol)
     {
         return root;
     }
-    else if (weight <= root->weight)
+
+    Node *leftResult = find_node_by_symbol(root->leftChild, symbol);
+    if (leftResult != NULL)
     {
-        return search_by_weight(root->leftChild, weight);
+        return leftResult; 
+    }
+
+    return find_node_by_symbol(root->rightChild, symbol);
+}
+
+Node *find_highest_order_node_with_same_weight(Node *root, int weight)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+
+    Node *highestNode = NULL;
+
+    if (root->weight == weight)
+    {
+        highestNode = root;
+    }
+
+    Node *leftResult = find_highest_order_node_with_same_weight(root->leftChild, weight);
+    Node *rightResult = find_highest_order_node_with_same_weight(root->rightChild, weight);
+
+    if (leftResult && (highestNode == NULL || leftResult->order > highestNode->order))
+    {
+        highestNode = leftResult;
+    }
+    else if (rightResult && (highestNode == NULL || rightResult->order > highestNode->order))
+    {
+        highestNode = rightResult;
+    }
+
+    return highestNode;
+}
+
+void swap_nodes(Node *firstNode, Node *secondNode)
+{
+    if (firstNode == NULL || secondNode == NULL)
+    {
+        print_error_message("swap_nodes", ERROR_MEMORY_ALLOCATION);
+        return;
+    }
+
+    int tmpSymbol = firstNode->symbol;
+    int tmpWeight = firstNode->weight;
+    int tmpOrder = firstNode->order;
+    bool tmpNYT = firstNode->isNYT;
+
+    firstNode->symbol = secondNode->symbol;
+    firstNode->weight = secondNode->weight;
+    firstNode->order = secondNode->order;
+    firstNode->isNYT = secondNode->isNYT;
+
+    secondNode->symbol = tmpSymbol;
+    secondNode->weight = tmpWeight;
+    secondNode->order = tmpOrder;
+    secondNode->isNYT = tmpNYT;
+}
+
+void rebalance(Node *node)
+{
+    while (node != NULL)
+    {
+        Node *highestNode = find_highest_order_node_with_same_weight(node, node->weight);
+
+        if (highestNode != NULL && highestNode != node && highestNode != node->parent)
+        {
+            swap_nodes(node, highestNode);
+        }
+
+        node->weight += 1;
+        node = node->parent;
+    }
+}
+
+Node *update_tree(Node *root, int symbol)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+
+    Node *node = find_node_by_symbol(root, symbol);
+    
+    if (node == NULL)
+    {
+        Node *nullNode = find_nyt_node(root);
+
+        if (nullNode == NULL)
+        {
+            print_error_message("update_tree", ERROR_MEMORY_ALLOCATION);
+            return NULL;
+        }
+
+        Node *internalNode = create_node(NULL_VALUE, false);
+        Node *currentNode = create_node(symbol, false);
+
+        if (internalNode == NULL || currentNode == NULL)
+        {
+            print_error_message("update_tree", ERROR_MEMORY_ALLOCATION);
+            return NULL;
+        }
+
+        internalNode->weight = 1;
+        currentNode->weight = 1;
+
+        internalNode->leftChild = nullNode;
+        internalNode->rightChild = currentNode;
+        internalNode->parent = nullNode->parent;
+
+        if (nullNode->parent != NULL)
+        {
+            if (nullNode->parent->leftChild == nullNode)
+            {
+                nullNode->parent->leftChild = internalNode;
+            }
+            else
+            {
+                nullNode->parent->rightChild = internalNode;
+            }
+        }
+        else
+        {
+            root = internalNode;
+        }
+        
+        nullNode->parent = internalNode;
+        currentNode->parent = internalNode;
+        rebalance(internalNode);
     }
     else
     {
-        return search_by_weight(root->rightChild, weight);
+        node->weight += 1;
+        rebalance(node);
     }
+
+    return root;
 }
 
-Node * find_nyt_parent(Node *root, Node *nytNode)
+void free_node(Node *node)
 {
-    if (root == NULL || nytNode == NULL)
+    if (node != NULL)
     {
-        return NULL;
+        free_node(node->leftChild);
+        free_node(node->rightChild);
+        free(node);
     }
-
-    if (root->leftChild == nytNode || root->rightChild == nytNode)
-    {
-        return root;
-    }
-
-    Node *leftResult = find_nyt_parent(root->leftChild, nytNode);
-    if (leftResult != NULL)
-    {
-        return leftResult;
-    }
-
-    Node *rightResult = find_nyt_parent(root->rightChild, nytNode);
-    if (rightResult != NULL)
-    {
-        return rightResult;
-    }
-
-    return NULL;
-}
-
-bool is_leaf(Node *root)
-{
-    if (root == NULL)
-    {
-        return false;
-    }
-
-    return (root->leftChild == NULL && root->rightChild == NULL);
 }

@@ -24,7 +24,7 @@
 Polyzip is a program written in C11 for **compressing and decompressing files** using the following algorithms:
 
 - RLE (Run-Length Encoding),
-- Huffman (adptative),
+- Adaptive Huffman (Faller-Gallager-Knuth),
 - LZW (Lempel-Ziv-Welch) (TODO),
 - DEFLATE (TODO).
 

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     printf("▐▛▀▘ ▀▄▄▄▀ █  ▀▀▀█ █▄▄▄▄ █ █▄▄▄▀\n");
     printf("▐▌         █ ▄   █       █ █     \n");
     printf("              ▀▀▀          ▀    \n");
-    printf("This program compresses files using RLE encoding.\n");
+    printf("lets you compress and decompress files using various algorithms.\n");
 
     if (argc < 5)
     {
