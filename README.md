@@ -25,7 +25,7 @@ Polyzip is a program written in C11 for **compressing and decompressing files** 
 
 - RLE (Run-Length Encoding),
 - Adaptive Huffman (Faller-Gallager-Knuth),
-- LZW (Lempel-Ziv-Welch) (TODO),
+- LZW (Lempel-Ziv-Welch),
 - DEFLATE (TODO).
 
 Polyzip tries to adhere to **simple**, **secure** and **tested** code.
@@ -38,15 +38,20 @@ Polyzip tries to adhere to **simple**, **secure** and **tested** code.
 - Criterion (for tests only),
 - OpenSSL (for tests only).
 
-Compiling the project is very easy.  
+Compiling the project is very easy. Follow the steps below!  
 In your CLI:
 
 1. `git clone git@github.com:bendcz/Polyzip.git`
 2. `cd Polyzip`
 3. `mkdir build && cd build`
-4. `cmake .. && make`
 
-To active test compilation, `cmake ..` should be `cmake -DBUILD_TESTS=ON ..`.
+Then, you have three choices.
+1. **Compile in Release mode (with optimizations and without debug possibilities):**
+    - `cmake .. && make`
+2. **Compile in Debug mode (without optimizations and with debug possibilities):**
+    - `cmake .. -DDEBUG=ON && make`
+3. **Compile unit tests:**
+    - `cmake -DBUILD_TESTS=ON .. & make`
 
 ## ⚡ Download an already-compiled version
 
