@@ -4,7 +4,6 @@
 
 [![language](https://img.shields.io/badge/language-c-9128bf?style=for-the-badge)]()
 [![standard](https://img.shields.io/badge/c_standard-c11-9128bf?style=for-the-badge)]()
-[![OS](https://img.shields.io/badge/OS-Windows,_macOS,_Linux-9128bf?style=for-the-badge)]()
 [![Dynamic Regex Badge](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fgithub.com%2Fbendcz%2FPolyzip%2Factions%2Fworkflows%2Fgithub-code-scanning%2Fcodeql%2Fbadge.svg&search=%3Ctitle%3E%5B%5E%3C%5D*%20-%20(%5B%5E%3C%5D%2B)%3C%5C%2Ftitle%3E&replace=%241&style=for-the-badge&logo=github&label=CodeQL&color=brightbreen)
 ]()
 [![license](https://img.shields.io/badge/license-Unlicense-brightbreen?style=for-the-badge)]()
@@ -12,10 +11,11 @@
 ## :bookmark: Table of Contents
 - [About](#-about)
 - [How to Build](#-how-to-build)
-- [Download an already compiled version](#-download-an-already-compiled-version)
 - [Documentation](#-documentation)
     - [How it works?](#how-it-works)
     - [Usage](#usage)
+- [Security](#-security)
+- [To-Do List](#-to-do-list)
 - [License](#-license)
 - [Contacts](#-contacts)
 
@@ -25,8 +25,7 @@ Polyzip is a program written in C11 for **compressing and decompressing files** 
 
 - RLE (Run-Length Encoding),
 - Adaptive Huffman (Faller-Gallager-Knuth),
-- LZW (Lempel-Ziv-Welch),
-- DEFLATE (TODO).
+- LZW (Lempel-Ziv-Welch).
 
 Polyzip tries to adhere to **simple**, **secure** and **tested** code.
 
@@ -35,8 +34,8 @@ Polyzip tries to adhere to **simple**, **secure** and **tested** code.
 **Dependencies:**
 
 - CMake (3.30 >=),
-- Criterion (for tests only),
-- OpenSSL (for tests only).
+- OpenSSL (3 >=),
+- Criterion (for tests only).
 
 Compiling the project is very easy. Follow the steps below!  
 In your CLI:
@@ -53,22 +52,22 @@ Then, you have three choices.
 3. **Compile unit tests:**
     - `cmake -DBUILD_TESTS=ON .. & make`
 
-## ⚡ Download an already-compiled version
-
-| Operating System | Link | SHA-512 |
-| ---------------- | ---- | ------- |
-| Windows 10 (32-bit) | | |
-| Windows 10 (64-bit) | | |
-| Windows 11 (32-bit) | | |
-| Windows 11 (32-bit) | | |
-| macOS Sequoia 15 | | |
-| Ubuntu 22.04 (32-bit) | | |
-| Ubuntu 22.04 (64-bit) | | |
-| Debian 11 (32-bit) | | |
-| Debian 11 (64-bit) | | |
-
 ## 📚 Documentation
+
 ### How it works?
+- #### Understand Polyzip's code
+
+![icon](resources/how-it-works.svg)
+
+- #### Understand the algorithms behind Polyzip
+    - RLE (Run-Length Encoding):
+        - [Wikipedia](https://en.wikipedia.org/wiki/Run-length_encoding)
+    - Adaptive Huffman (Faller-Gallager-Knuth):
+        - [Wikipedia](https://en.wikipedia.org/wiki/Adaptive_Huffman_coding)
+        - [Ben Tanen — Visualizing Adaptive Huffman Coding](https://ben-tanen.com/adaptive-huffman/)
+    - LZW (Lempel-Ziv-Welch):
+        - [Wikipedia](https://en.wikipedia.org/wiki/Lempel-Ziv-Welch)
+        - [GeeksforGeeks — LZW (Lempel–Ziv–Welch) Compression technique](https://www.geeksforgeeks.org/lzw-lempel-ziv-welch-compression-technique/)
 ### Usage
 
 In CLI: `./polyzip -<c|d> -<ALGORITHM> <INPUT_PATH> <OUTPUT_PATH>`,
@@ -81,6 +80,35 @@ In CLI: `./polyzip -<c|d> -<ALGORITHM> <INPUT_PATH> <OUTPUT_PATH>`,
 * `-lzw`: using the LZW algorithm,
 * `<INPUT_PATH>`: path to the file to compress/decompress,
 * `<OUTPUT_PATH>`: directory where the result should be written.
+
+
+## 🛡️ Security
+
+I tried to produce secure code, in particular by using functions with more safeguards (such as the buffer size in `snprintf`)  
+and by checking the various use cases with Valgrind. The pattern of the command is:
+
+```
+valgrind --leak-check=full \
+         --show-leak-kinds=all \
+         --track-origins=yes \
+         --verbose \
+         --log-file=valgrind-out.txt \
+         ./polyzip -<c|d> -<ALGORITHM> <INPUT_PATH> <OUTPUT_PATH>
+```
+
+⚠️ **Make sure you've compiled in debug mode before you expect to see anything!**
+
+I have also set up a CodeQL analysis for the repository. However, if you ever find a flaw in this code, you can contact me  
+by clicking on [this link](#-contacts).
+
+
+## 💡 To-Do List
+
+- Implement the DEFLATE algorithm,
+- Store *magic codes* in files to remember the original format,
+- Compile the executable for the main operating systems,
+- Make unit tests more robust and improve code coverage,
+- Creating a graphical interface with the SDL.
 
 ## 📃 License
 
@@ -111,5 +139,7 @@ For more information, please refer to <https://unlicense.org>
 
 ## 📫 Contacts
 
+* **Email**:
+* **Website**:
 
 [Back to top](#top)

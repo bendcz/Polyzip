@@ -1,26 +1,32 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-#define TABLE_SIZE 65536
+#define CAPACITY 4096
 
+#include <stdbool.h>
 #include <stdlib.h>
+#include <openssl/evp.h>
 #include "errors.h"
 
 typedef struct Entry
 {
-    char *key;
-    unsigned int code;
-    struct Entry *next;
+    const char *key;
+    int value;
 } Entry;
 
 typedef struct HashTable
 {
-    Entry *entries[TABLE_SIZE];
+    Entry *entries;
+    size_t capacity;
+    size_t length;
 } HashTable;
 
-unsigned int hash(const char *key);
 HashTable *initialize_table();
-int search_table(HashTable *table, const char *key);
-void insert_table(HashTable *table, const char *key, unsigned int code);
+void free_table(HashTable *table);
+unsigned char *hash_key(const char *key);
+unsigned int hash_to_index(const unsigned char *digest);
+int find_by_key(HashTable *table, const char *key);
+const char *add_to_table(HashTable *table, const char *key, int value);
+const char *find_by_value(HashTable *table, int value);
 
 #endif

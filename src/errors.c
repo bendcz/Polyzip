@@ -1,4 +1,5 @@
 #include "../include/errors.h"
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -31,7 +32,12 @@ int print_error_message(const char *functionName, int errorCode)
             return ERROR_MEMORY_ALLOCATION;
         case ERROR_FILE_READ:
             strncat(message, "ERROR_FILE_READ /!\\", 20);
-            perror(message);
+
+            if (errno != 0)
+            {
+                perror(message);
+            }
+
             free(message);
             return ERROR_FILE_READ;
         case ERROR_FILE_COMPRESSION:
