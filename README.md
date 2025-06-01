@@ -82,9 +82,9 @@ In CLI: `./polyzip -<c|d> -<ALGORITHM> <INPUT_PATH> <OUTPUT_PATH>`,
 * `<OUTPUT_PATH>`: directory where the result should be written.
 
 
-## 🛡️ Security
+## 🔒 Security
 
-I tried to produce secure code, in particular by using functions with more safeguards (such as the buffer size in `snprintf`)  
+I tried to produce secure code, in particular by using functions with more safeguards (such as the buffer size in `snprintf`)
 and by checking the various use cases with Valgrind. The pattern of the command is:
 
 ```
@@ -98,8 +98,7 @@ valgrind --leak-check=full \
 
 ⚠️ **Make sure you've compiled in debug mode before you expect to see anything!**
 
-I have also set up a CodeQL analysis for the repository. However, if you ever find a flaw in this code, you can contact me  
-by clicking on [this link](#-contacts).
+I have also set up a CodeQL analysis for the repository. However, if you ever find a flaw in this code, you can contact me by clicking on [this link](#-contacts).
 
 
 ## 💡 To-Do List
